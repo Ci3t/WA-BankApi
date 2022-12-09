@@ -94,7 +94,7 @@ export const postUser = (req, res) => {
       res.status(404).send('cannot edit user')
     }
 };
-
+//!deposit
 export const depositUser = (req, res) => {
   try{
 
@@ -116,6 +116,8 @@ export const depositUser = (req, res) => {
     res.status(404).send('cannot deposit cash')
   }
 };
+
+//!update
 export const updateCreditUser = (req, res) => {
   try{
 
@@ -138,7 +140,7 @@ export const updateCreditUser = (req, res) => {
   }
   };
 
-
+//!transfer 
 export const transferUser = (req, res) => {
   try{
 
@@ -169,36 +171,3 @@ export const transferUser = (req, res) => {
   res.status(404).send('cannot complete transfer (try use "amount" as keyword)')
 }
 };
-//*                 1000 + - 1000 = 0 
-//? TotalBalance = credit + cash ---> 1000 
-// ? credit => 1000
-// ? cash => 0 // -1000
-
-//* withdraw 1000 <= credit + cash ---> cash - 1000  credit 1000
-//* withdraw <= credit + cash ---> good 
-
-
-// const transfer = ({ from, to, amount }) => {
-    // const users = loadUsers();
-    // const sender = users.find((user) => user.id === from);
-    // const receiver = users.find((user) => user.id === to);
-    // if (!sender || !receiver) {
-    //   throw new Error("User does not exist");
-    // }
-    // if (hasFunds(sender, amount)) {
-    //   sender.cash -= amount
-    //   receiver.cash += amount
-    // }
-    // const updatedUsersAfterTransfer =  users.map((user => {
-    //   if (user.id === sender.id) {
-    //     return sender      
-    //   } else if (user.id === receiver.id) {
-    //     return receiver
-    //   } else {
-    //     return user
-    //   }
-    // }))
-//     saveUsers(updatedUsersAfterTransfer)
-//     return sender
-//   };
-  

@@ -3,19 +3,59 @@ import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 function User() {
-    const {passportId} = useParams
-    const [getUser,setGetUser] = useState({})
+    const {id} = useParams()
+    const [getUser,setGetUser] = useState([])
+    const [cashInp,setCashInp] = useState('')
+    const [creditInp,setCreditInp] = useState('')
 
     useEffect(()=>{
         const fetchUser = async ()=>{
-            const {data} = await axios.get(`http://localhost:5000/users`,passportId)
+            const {data} = await axios.get(`https://bankapi-s007.onrender.com/users/${id}`)
             console.log(data);
             setGetUser(data)
+          }
+          fetchUser()
+        },[id,getUser])
+
+        const deposit =async()=>{
+          
+          // await axios.patch(`https://bankapi-s007.onrender.com/users/${id}`,{
+          //   cash:+cashInp
+          // })
+          await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/deposit`,{
+            cash:+cashInp 
+          })
+
         }
-        fetchUser()
-    },[passportId])
+        const credit =async()=>{
+          
+          // await axios.patch(`https://bankapi-s007.onrender.com/users/${id}`,{
+          //   cash:+cashInp
+          // })
+          await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/update`,{
+            credit:+creditInp 
+          })
+
+        }
+ 
   return (
-    <div>{getUser.firstName}</div>
+    <div>
+      {getUser && 
+      <>
+      <p>First Name: {getUser.firstName}</p>
+      <p>Last Name: {getUser.lastName}</p>
+      <p>Cash: {getUser.cash}</p>
+      <p>Credit: {getUser.credit}</p>
+      <p>Total Balance: {getUser.credit + getUser.cash}</p>
+      </>
+      }
+      <>
+      Deposit: <input  value={cashInp} onChange={(e)=>setCashInp(e.target.value)} type={'number'}/> <button onClick={deposit}>Deposit</button>
+      </>
+      <>
+      Credit: <input  value={creditInp} onChange={(e)=>setCreditInp(e.target.value)} type={'number'}/> <button onClick={credit}>Deposit</button>
+      </>
+    </div>
   )
 }
 

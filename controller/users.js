@@ -102,9 +102,9 @@ export const depositUser = (req, res) => {
     const userBody = { ...req.body };
     let user = userParse.find((u) => u.passportId === id);
     
-    if (userBody.cash) user.cash = userBody.cash;
+    if (userBody.cash) user.cash += userBody.cash;
 
-    
+    console.log(userBody);
     fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
       if (err) {
         res.status(404).send("Failed to Add user");
@@ -126,7 +126,7 @@ export const updateCreditUser = (req, res) => {
     let user = userParse.find((u) => u.passportId === id);
     
     
-    if (userBody.credit >= 0) user.credit = userBody.credit;
+    if (userBody.credit >= 0) user.credit += userBody.credit;
     
     fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
       if (err) {

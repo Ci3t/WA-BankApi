@@ -9,7 +9,7 @@ function Users() {
 
     useEffect(()=>{
         const fetchUsers = async ()=>{
-            const {data} = await axios.get('http://localhost:5000/users')
+            const {data} = await axios.get('https://bankapi-s007.onrender.com/users')
             console.log(data);
             setGetUsers(data)
         }
@@ -23,6 +23,8 @@ function Users() {
         <p>FirstName: {user.firstName}</p>
         <p>lastName :{user.lastName}</p>
         <p>Cash :{user.cash}</p>
+        <p>credit :{user.credit}</p>
+        <p>Total Balance :{user.cash + user.credit}</p>
         </React.Fragment>
        ))}
       

@@ -9,6 +9,7 @@ import {
   Link  
 }   
 from 'react-router-dom';  
+import CreateUser from "./jsx/CreateUser";
 
 
 
@@ -17,8 +18,10 @@ function App() {
   return (
     <div>
       <Routes>
-        <Route path="/" element={<Users/>}/>
-        <Route path="/:passportId" element={<User/>}/>
+        <Route path="/" element={'homepage'}/>
+        <Route path="/users" element={<Users/>}/>
+        <Route path="/users/create" element={<CreateUser/>}/>
+        <Route path="/users/:id" element={<User/>}/>
       
       </Routes>
     

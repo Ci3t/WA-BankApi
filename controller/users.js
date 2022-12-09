@@ -7,117 +7,157 @@ let userParse = JSON.parse(fs.readFileSync(`./db/users.json`));
 //!get all users
 
 export const getUsers = (req, res) => {
-  res.send(userParse);
+  try{
+
+    res.send(userParse);
+  }catch(e){
+    res.status(404).send('no Users found')
+  }
 };
 //!get user
 
 export const getUser = (req, res) => {
-  const { id } = req.params;
+  try{
 
-  console.log(req.query);
-   
-let user = userParse.find((u) => u.passportId === id);
-
-
-  res.status(200).send(user);
+    const { id } = req.params;
+    
+    
+    
+    let user = userParse.find((u) => u.passportId === id);
+    
+    
+    res.status(200).send(user);
+  }catch(e){
+    res.status(404).send('no User found')
+  }
 };
 
 //! add user
 export const postUser = (req, res) => {
+  try{
+
     const {id} = req.params
-  const user = {
-    passportId: nanoid(),
-    cash: 0,
-    credit:0,
-    ...req.body,
-  };
-  let findUser = userParse.find((u) => u.passportId === id);
-
-  if(findUser){
-    res.status(404).send('User Exist')
-  }else{
-
-      userParse.push(user);
+   const userCheck = {...req.body}
     
+    
+    const user = {
+      passportId: nanoid(),
+      cash: 0,
+      credit:0,
+      ...req.body,
+    };
+
+    userParse.find((u) =>{
+      if(u.firstName === user.firstName && u.lastName === user.lastName){
+        
+        res.status(500).send('user exist')
+      }
+      
+      
+      
+    });
+    userParse.push(user);
+    
+    fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
+      if (err) {
+        res.status(404).send("Failed to Add user");
+      } else {
+        res.send("User Created Successfully ");
+      }
+    });
+  }catch(e){
+    res.status(404).send('cannot add new user')
+  }
+  }
+  
+  //! edit cash and credit
+  export const patchUser = (req, res) => {
+    try{
+
+      const { id } = req.params;
+      const userBody = { ...req.body };
+      let user = userParse.find((u) => u.passportId === id);
+      
+      if (userBody.cash) user.cash = userBody.cash;
+      if (userBody.credit >= 0) user.credit = userBody.credit;
+      if (userBody.firstName) user.firstName = userBody.firstName;
+      if (userBody.lastName) user.lastName = userBody.lastName;
+      
       fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
         if (err) {
           res.status(404).send("Failed to Add user");
         } else {
-          res.send("User Created Successfully ");
+          res.send("User Edited Successfully ");
         }
       });
-  }
-};
-
-//! edit cash and credit
-export const patchUser = (req, res) => {
-  const { id } = req.params;
-  const userBody = { ...req.body };
-  let user = userParse.find((u) => u.passportId === id);
-
-  if (userBody.cash) user.cash = userBody.cash;
-  if (userBody.credit >= 0) user.credit = userBody.credit;
-  if (userBody.firstName) user.firstName = userBody.firstName;
-  if (userBody.lastName) user.lastName = userBody.lastName;
-
-  fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
-    if (err) {
-      res.status(404).send("Failed to Add user");
-    } else {
-      res.send("User Edited Successfully ");
+    }catch(e){
+      res.status(404).send('cannot edit user')
     }
-  });
 };
 
 export const depositUser = (req, res) => {
-  const { id } = req.params;
-  const userBody = { ...req.body };
-  let user = userParse.find((u) => u.passportId === id);
+  try{
 
-  if (userBody.cash) user.cash = userBody.cash;
-  if (userBody.credit >= 0) user.credit = userBody.credit;
+    const { id } = req.params;
+    const userBody = { ...req.body };
+    let user = userParse.find((u) => u.passportId === id);
+    
+    if (userBody.cash) user.cash = userBody.cash;
 
-  fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
-    if (err) {
-      res.status(404).send("Failed to Add user");
-    } else {
-      res.send("User Edited Successfully ");
-    }
-  });
+    
+    fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
+      if (err) {
+        res.status(404).send("Failed to Add user");
+      } else {
+        res.send("User Edited Successfully ");
+      }
+    });
+  }catch(e){
+    res.status(404).send('cannot deposit cash')
+  }
 };
 export const updateCreditUser = (req, res) => {
-  const { id } = req.params;
-  const userBody = { ...req.body };
-  let user = userParse.find((u) => u.passportId === id);
+  try{
 
-
-  if (userBody.credit >= 0) user.credit = userBody.credit;
-
-  fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
-    if (err) {
-      res.status(404).send("Failed to Add user");
-    } else {
-      res.send("User Edited Successfully ");
-    }
-  });
-};
+    const { id } = req.params;
+    const userBody = { ...req.body };
+    let user = userParse.find((u) => u.passportId === id);
+    
+    
+    if (userBody.credit >= 0) user.credit = userBody.credit;
+    
+    fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
+      if (err) {
+        res.status(404).send("Failed to Add user");
+      } else {
+        res.send("User Edited Successfully ");
+      }
+    });
+  }catch{
+    res.status(404).send('cannot update credit ')
+  }
+  };
 
 
 export const transferUser = (req, res) => {
-  const { from,to } = req.params;
-  const {amount} = { ...req.body };
+  try{
+
+    const { from,to } = req.params;
+    const {amount,cash,credit} = { ...req.body };
   let user1 = userParse.find((u) => u.passportId === from);
   let user2 = userParse.find((u) => u.passportId === to);
-//    con
-const totalBalance = user1.cash + user1.credit;
+
+  if(cash||credit) throw new Error
+  const totalBalance = user1.cash + user1.credit;
+
   if (amount > totalBalance){
     res.status(404).send('ERROR withdraw amount bigger than balance')
   }else{
     user1.cash -= amount;
     user2.cash += amount
-
+    
   }
-
+  
   fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
     if (err) {
       res.status(404).send("Failed to Add user");
@@ -125,6 +165,9 @@ const totalBalance = user1.cash + user1.credit;
       res.send("User Edited Successfully ");
     }
   });
+}catch(e){
+  res.status(404).send('cannot complete transfer (try use "amount" as keyword)')
+}
 };
 //*                 1000 + - 1000 = 0 
 //? TotalBalance = credit + cash ---> 1000 

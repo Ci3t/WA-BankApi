@@ -7,6 +7,7 @@ function User() {
     const [getUser,setGetUser] = useState([])
     const [cashInp,setCashInp] = useState('')
     const [creditInp,setCreditInp] = useState('')
+    const [withdrawInp,setWithdrawInp] = useState('')
 
     useEffect(()=>{
         const fetchUser = async ()=>{
@@ -37,6 +38,21 @@ function User() {
           })
 
         }
+        const withdraw =async()=>{
+          
+          // await axios.patch(`https://bankapi-s007.onrender.com/users/${id}`,{
+          //   cash:+cashInp
+          // })
+          try{
+
+            await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/withdraw`,{
+              amount:+withdrawInp 
+            })
+          }catch(e){
+            console.log(e.response.data);
+          }
+
+        }
  
   return (
     <div>
@@ -54,6 +70,9 @@ function User() {
       </>
       <>
       Credit: <input  value={creditInp} onChange={(e)=>setCreditInp(e.target.value)} type={'number'}/> <button onClick={credit}>Deposit</button>
+      </>
+      <>
+      Withdraw: <input  value={withdrawInp} onChange={(e)=>setWithdrawInp(e.target.value)} type={'number'}/> <button onClick={withdraw}>Withdraw</button>
       </>
     </div>
   )

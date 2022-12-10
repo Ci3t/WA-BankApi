@@ -153,6 +153,7 @@ export const transferUser = (req, res) => {
   const totalBalance = user1.cash + user1.credit;
 
   if (amount > totalBalance){
+    throw new Error
     res.status(404).send('ERROR withdraw amount bigger than balance')
   }else{
     user1.cash -= amount;
@@ -184,6 +185,7 @@ export const withdrawUser = (req, res) => {
   const totalBalance = user1.cash + user1.credit;
 
   if (amount > totalBalance){
+    throw new Error
     res.status(404).send('ERROR withdraw amount bigger than balance')
   }else{
     user1.cash -= amount;

@@ -8,12 +8,12 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import './user.css'
 function User() {
-    const {from,to,id} = useParams()
+    const {id} = useParams()
     const [getUser,setGetUser] = useState([])
     const [cashInp,setCashInp] = useState('')
     const [creditInp,setCreditInp] = useState('')
     const [withdrawInp,setWithdrawInp] = useState('')
-    const [transInp,setTransInp] = useState('')
+
     const [toIdInp,setToIdInp] = useState('')
     const [toAmountInp,setToAmountInp] = useState('')
     const [errorMsg,setErrorMsg] = useState('')
@@ -29,18 +29,26 @@ function User() {
 
         const deposit =async()=>{
           
-     
-          await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/deposit`,{
-            cash:+cashInp 
-          })
+          try{
+
+            await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/deposit`,{
+              cash:+cashInp 
+            })
+          }catch(e){
+            setErrorMsg(e);
+          }
 
         }
         const credit =async()=>{
           
+      try{
+        await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/update`,{
+          credit:+creditInp 
+        })
+      }catch(e){
+        setErrorMsg(e);
+      }
       
-          await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/update`,{
-            credit:+creditInp 
-          })
 
         }
         const withdraw =async()=>{
@@ -146,7 +154,7 @@ function User() {
         />
         <Button onClick={credit} variant="primary">Update</Button>
       </InputGroup>
- 
+      {errorMsg && errorMsg?.response.data}
     </div>
   )
 }

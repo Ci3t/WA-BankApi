@@ -1,0 +1,21 @@
+.container-card{
+    display: flex;
+    flex-wrap: wrap;
+    gap:2em;
+}
+.container-card a{
+    color: white;
+    text-decoration: none;
+}
+.containerusers{
+    text-align: center;
+    padding: 2em;
+    background-color: #333;
+}
+.containerusers h1{
+    text-align: center;
+    padding: 0.2em;
+    background-color: #333;
+    color: white;
+}
+

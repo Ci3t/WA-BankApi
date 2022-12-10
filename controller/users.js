@@ -148,6 +148,8 @@ export const transferUser = (req, res) => {
     const {amount,cash,credit} = { ...req.body };
   let user1 = userParse.find((u) => u.passportId === from);
   let user2 = userParse.find((u) => u.passportId === to);
+  // let user3 = userParse.find((u) => u.includes(passportId));
+  // console.log(user3);
 
   if(cash||credit) throw new Error
   const totalBalance = user1.cash + user1.credit;

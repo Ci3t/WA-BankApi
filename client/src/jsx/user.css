@@ -1,0 +1,16 @@
+
+
+#maxWidth{
+    max-width: 30em;
+}
+#inputWidth{
+    max-width: 30em;
+}
+
+.container-User{
+    text-align: center;
+    padding: 2em;
+    background-color: #333;
+    min-height: 100vh;
+ 
+}

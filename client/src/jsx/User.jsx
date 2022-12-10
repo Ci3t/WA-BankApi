@@ -1,13 +1,22 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import ListGroup from 'react-bootstrap/ListGroup';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import './user.css'
 function User() {
-    const {id} = useParams()
+    const {from,to,id} = useParams()
     const [getUser,setGetUser] = useState([])
     const [cashInp,setCashInp] = useState('')
     const [creditInp,setCreditInp] = useState('')
     const [withdrawInp,setWithdrawInp] = useState('')
+    const [transInp,setTransInp] = useState('')
+    const [toIdInp,setToIdInp] = useState('')
+    const [toAmountInp,setToAmountInp] = useState('')
+    const [errorMsg,setErrorMsg] = useState('')
 
     useEffect(()=>{
         const fetchUser = async ()=>{
@@ -20,9 +29,7 @@ function User() {
 
         const deposit =async()=>{
           
-          // await axios.patch(`https://bankapi-s007.onrender.com/users/${id}`,{
-          //   cash:+cashInp
-          // })
+     
           await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/deposit`,{
             cash:+cashInp 
           })
@@ -30,50 +37,116 @@ function User() {
         }
         const credit =async()=>{
           
-          // await axios.patch(`https://bankapi-s007.onrender.com/users/${id}`,{
-          //   cash:+cashInp
-          // })
+      
           await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/update`,{
             credit:+creditInp 
           })
 
         }
         const withdraw =async()=>{
-          
-          // await axios.patch(`https://bankapi-s007.onrender.com/users/${id}`,{
-          //   cash:+cashInp
-          // })
+        
           try{
 
             await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/withdraw`,{
               amount:+withdrawInp 
             })
           }catch(e){
-            console.log(e.response.data);
+            setErrorMsg(e);
           }
 
         }
- 
+        const transfer =async()=>{
+        
+          try{
+   
+           
+            await axios.patch(`https://bankapi-s007.onrender.com/users/${id}/trans/${toIdInp}`,{
+              amount:+toAmountInp
+            })
+          }catch(e){
+            setErrorMsg(e);
+          }
+
+        }
+     
   return (
-    <div>
+    <div className='container-User'>
       {getUser && 
       <>
-      <p>First Name: {getUser.firstName}</p>
-      <p>Last Name: {getUser.lastName}</p>
-      <p>Cash: {getUser.cash}</p>
-      <p>Credit: {getUser.credit}</p>
-      <p>Total Balance: {getUser.credit + getUser.cash}</p>
+   
+      <Card style={{ marginBottom:'1em', width: '18rem' }}>
+      
+      <Card.Body>
+        <Card.Title>Name : {getUser.firstName} {getUser.lastName} </Card.Title>
+        <ListGroup variant="flush">
+        <ListGroup.Item>ID : {getUser.passportId}</ListGroup.Item>
+        <ListGroup.Item>Cash :{getUser.cash}</ListGroup.Item>
+        <ListGroup.Item>credit :{getUser.credit}</ListGroup.Item>
+        <ListGroup.Item>Total Balance :{getUser.cash + getUser.credit}</ListGroup.Item>
+      </ListGroup>
+       
+      </Card.Body>
+    </Card>
       </>
       }
-      <>
-      Deposit: <input  value={cashInp} onChange={(e)=>setCashInp(e.target.value)} type={'number'}/> <button onClick={deposit}>Deposit</button>
-      </>
-      <>
-      Credit: <input  value={creditInp} onChange={(e)=>setCreditInp(e.target.value)} type={'number'}/> <button onClick={credit}>Deposit</button>
-      </>
-      <>
-      Withdraw: <input  value={withdrawInp} onChange={(e)=>setWithdrawInp(e.target.value)} type={'number'}/> <button onClick={withdraw}>Withdraw</button>
-      </>
+      <InputGroup id='maxWidth' className="mb-3">
+        <InputGroup.Text id="inputGroup-sizing-default">
+        Deposit:
+        </InputGroup.Text>
+        <Form.Control
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+          value={cashInp} onChange={(e)=>setCashInp(e.target.value)} type={'number'}
+        />
+        <Button onClick={deposit} variant="primary">Deposit</Button>
+      </InputGroup>
+      <InputGroup id='maxWidth' className="mb-3">
+        <InputGroup.Text id="inputGroup-sizing-default">
+        Withdraw: 
+        </InputGroup.Text>
+        <Form.Control
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+          value={withdrawInp} onChange={(e)=>setWithdrawInp(e.target.value)} type={'number'}
+        />
+        <Button onClick={withdraw} variant="primary">Withdraw</Button>
+      </InputGroup>
+      <InputGroup id='inputWidth' className="mb-3">
+        <InputGroup.Text id="inputGroup-sizing-default">
+        Transfer To: (by Id)
+        </InputGroup.Text>
+        <Form.Control
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+           value={toIdInp} onChange={(e)=>setToIdInp(e.target.value)} type={'text'}
+        />
+        </InputGroup>
+        
+        <InputGroup id='inputWidth' className="mb-3">
+        <InputGroup.Text id="inputGroup-sizing-default">
+        Amount:
+        </InputGroup.Text>
+        <Form.Control
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+          value={toAmountInp} onChange={(e)=>setToAmountInp(e.target.value)} type={'number'}
+          />
+        <Button onClick={transfer} variant="primary">Transfer</Button>
+      </InputGroup>
+
+      <InputGroup id='maxWidth' className="mb-3">
+        <InputGroup.Text id="inputGroup-sizing-default">
+        Update Credit (if Banker)
+        </InputGroup.Text>
+        <Form.Control
+        
+          aria-label="Default"
+          aria-describedby="inputGroup-sizing-default"
+          value={withdrawInp} onChange={(e)=>setCreditInp(e.target.value)} type={'number'}
+        />
+        <Button onClick={credit} variant="primary">Update</Button>
+      </InputGroup>
+ 
     </div>
   )
 }

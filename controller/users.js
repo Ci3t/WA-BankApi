@@ -47,28 +47,28 @@ export const postUser = (req, res) => {
       ...req.body,
     };
 
-    userParse.find((u) =>{
-      if(u.firstName === user.firstName && u.lastName === user.lastName){
-        
-        res.status(500).send('user exist')
-      }
-      
-      
-      
+    let userFind = userParse.find((u) =>{
+      return u.firstName === user.firstName && u.lastName === user.lastName
     });
-    userParse.push(user);
     
-    fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
-      if (err) {
-        res.status(404).send("Failed to Add user");
-      } else {
-        res.send("User Created Successfully ");
-      }
-    });
+    if(userFind){
+      return  res.status(500).send('user exist')
+    }else{
+      userParse.push(user);
+
+      fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
+        if (err) {
+          res.status(404).send("Failed to Add user");
+        } else {
+          res.send("User Created Successfully ");
+        }
+      });
+    }
   }catch(e){
     res.status(404).send('cannot add new user')
   }
   }
+
   
   //! edit cash and credit
   export const patchUser = (req, res) => {
@@ -130,9 +130,9 @@ export const updateCreditUser = (req, res) => {
     
     fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
       if (err) {
-        res.status(404).send("Failed to Add user");
+        res.status(404).send("Failed to update user info");
       } else {
-        res.send("User Edited Successfully ");
+        res.send("User Updated Successfully ");
       }
     });
   }catch{
@@ -162,12 +162,43 @@ export const transferUser = (req, res) => {
   
   fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
     if (err) {
-      res.status(404).send("Failed to Add user");
+      res.status(404).send("Failed to update user info");
     } else {
-      res.send("User Edited Successfully ");
+      res.send("User updated Successfully ");
     }
   });
 }catch(e){
   res.status(404).send('cannot complete transfer (try use "amount" as keyword)')
+}
+};
+//!withdraw 
+export const withdrawUser = (req, res) => {
+  try{
+
+    const { id } = req.params;
+    const {amount,cash,credit} = { ...req.body };
+  let user1 = userParse.find((u) => u.passportId === id);
+
+
+  if(cash||credit) throw new Error
+  const totalBalance = user1.cash + user1.credit;
+
+  if (amount > totalBalance){
+    res.status(404).send('ERROR withdraw amount bigger than balance')
+  }else{
+    user1.cash -= amount;
+
+    
+  }
+  
+  fs.writeFile("./db/users.json", JSON.stringify(userParse), (err) => {
+    if (err) {
+      res.status(404).send("Failed to update balance");
+    } else {
+      res.send("balance updated Successfully ");
+    }
+  });
+}catch(e){
+  res.status(404).send('cannot withdraw (try use "amount" as keyword or you dont have enough balance)')
 }
 };

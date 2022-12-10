@@ -150,7 +150,7 @@ function User() {
         
           aria-label="Default"
           aria-describedby="inputGroup-sizing-default"
-          value={withdrawInp} onChange={(e)=>setCreditInp(e.target.value)} type={'number'}
+          value={creditInp} onChange={(e)=>setCreditInp(e.target.value)} type={'number'}
         />
         <Button onClick={credit} variant="primary">Update</Button>
       </InputGroup>

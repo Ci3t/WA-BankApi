@@ -12,6 +12,7 @@ indexRouter.get('',(req,res)=>{
         deposit => /users/:id/deposit
         transfer => /users/:from/trans/:to  (from & to take ID's) (use "amount" as key to transfer)
         update credit => /users/:id/update
+        withdraw money  => /users/:id/withdraw
 
         (Note: Use Patch Method and not PUT to edit/update)
     `)
